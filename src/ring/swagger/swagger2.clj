@@ -37,7 +37,7 @@
 ;; Paths, parameters, responses
 ;;
 
-(defmulti ^:private extract-parameter (fn [in _ _] in))
+(defmulti extract-parameter (fn [in _ _] in))
 
 (defmethod extract-parameter :body [_ model options]
   (if model
@@ -50,6 +50,20 @@
          :required (not (rsjs/maybe? model))
          :schema schema-json}))))
 
+(defmethod extract-parameter :params [in model options]
+  (if model
+    (for [[k v] (-> model common/value-of stc/schema-value rsc/strict-schema)
+          :when (s/specific-key? k)
+          :let [rk (s/explicit-schema-key k)
+                json-schema (rsjs/->swagger v options)]
+          :when json-schema]
+      (merge
+        {:in (name in)
+         :name (name rk)
+         :description (or (:description (rsjs/json-schema-meta v)) "")
+         :required (or (= in :path) (s/required-key? k))}
+         :schema json-schema))))
+      
 (defmethod extract-parameter :default [in model options]
   (if model
     (for [[k v] (-> model common/value-of stc/schema-value rsc/strict-schema)
