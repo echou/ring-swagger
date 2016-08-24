@@ -20,11 +20,15 @@
                         flatten)
         body-models (->> route-meta
                          (map (comp :body :parameters)))
+        params-models (->> route-meta
+                           (mapcat :parameters)
+                           (map (comp last last last))
+                           (keep :schema))
         response-models (->> route-meta
                              (map :responses)
                              (mapcat vals)
                              (keep :schema))]
-    (concat body-models response-models)))
+    (concat body-models params-models response-models)))
 
 (defn transform-models [schemas options]
   (->> schemas
