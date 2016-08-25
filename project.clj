@@ -1,6 +1,6 @@
-(defproject metosin/ring-swagger "0.23.0-SNAPSHOT"
-  :description "Swagger Spec for Ring Apps"
-  :url "https://github.com/metosin/ring-swagger"
+(defproject echou/ring-swagger "0.23.0-SNAPSHOT"
+  :description "Swagger Spec for Ring Apps (echou)"
+  :url "https://github.com/echou/ring-swagger"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo
